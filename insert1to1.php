@@ -40,8 +40,18 @@ if (isset($_POST['user'])) {
 
         $col1 = implode(', ', $col1);
         $col2 = implode(', ', $col2);
+        $sql = '';
+        $opt = isset($_POST['opt']) ? $_POST['opt'] : 'INSERT';
 
-        $sql = "INSERT INTO {$db2}.{$tb2} ({$col1}) SELECT $col2 FROM {$db1}.{$tb1};";
+        if(isset($_POST['foreign_keys'])) {
+            $sql .= "SET FOREIGN_KEY_CHECKS=0; \n";
+        }
+
+        $sql .= "{$opt} INTO {$db2}.{$tb2} ({$col1}) SELECT $col2 FROM {$db1}.{$tb1}; \n";
+
+        if(isset($_POST['foreign_keys'])) {
+            $sql .= "SET FOREIGN_KEY_CHECKS=1; ";
+        }
 
         print "<textarea style='width: 100%; height: 120px'>{$sql}</textarea>";
     }
@@ -105,7 +115,14 @@ function getSelect($columns, $name, $value = '')
 
         <hr>
         <?php if (isset($_POST['user'])) { ?>
-            <table>
+            <input type="checkbox" name="foreign_keys" id="foreign_keys" <?= (isset($_POST['foreign_keys'])) ? 'checked="checked"' : '' ?> value="1">
+            <label for="foreign_keys">Disable Foreign Keys </label>
+            <br><br>
+            <select name="opt" id="opt">
+                <option <?= ($_POST['opt'] == 'INSERT') ? "selected='selected'" : '';?> value="INSERT">INSERT</option>
+                <option <?= ($_POST['opt'] == 'REPLACE') ? "selected='selected'" : '';?> value="REPLACE">REPLACE</option>
+            </select>
+            <table style="margin-top: 20px;">
                 <thead>
                 <tr>
                     <th>#</th>
@@ -132,3 +149,4 @@ function getSelect($columns, $name, $value = '')
 </div>
 </body>
 </html>
+
