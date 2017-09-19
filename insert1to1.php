@@ -73,7 +73,7 @@ function getSelect($columns, $name, $value = '')
     $sel = "<select name='col[$name]'>";
     $sel .= "<option value=''>--</option>";
     foreach ($columns as $col) {
-        $selected = ($col['Field'] == $value) ? "selected='selected'" : '';
+        $selected = ($col['Field'] == $name) ? "selected='selected'" : '';
         $sel .= "<option $selected value='$col[Field]'>$col[Field] : $col[Type]</option>";
     }
     $sel .= "</select>";
